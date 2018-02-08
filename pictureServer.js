@@ -89,7 +89,7 @@ parser.on('data', function(data) {
   console.log('Data:', data);
   io.emit('server-msg', data);
   if (data === 'light') {
-    io.emit('takePicture');
+    socket.emit('takePicture');
   }
 });
 //----------------------------------------------------------------------------//
