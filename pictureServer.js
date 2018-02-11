@@ -29,9 +29,7 @@ let Readline = SerialPort.parsers.Readline; // read serial data as lines
 //-- Addition:
 let NodeWebcam = require( "node-webcam" );// load the webcam module
 
-let request = require('superagent');
-let path = require('path');
-let fs = require('fs');
+let gifshot = require('gifshot')
 
 //---------------------- WEBAPP SERVER SETUP ---------------------------------//
 // use express to create the simple webapp
