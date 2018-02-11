@@ -103,6 +103,10 @@ let takePicture = () => {
       /// The browser will take this new name and load the picture from the public folder.
 
       // make request
+      let debug = function() {
+        if (process.env.DEBUG) console.log.apply(null, arguments);
+      };
+
       let filter = 'art_deco';
       request
           .post(url)                    // this is a POST request
