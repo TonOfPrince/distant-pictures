@@ -142,7 +142,7 @@ io.on('connect', function(socket) {
   });
 
   //-- Addition: This function is called when the client clicks on the `Take a picture` button.
-  socket.on('takePicture', takePicture);
+  socket.on('takePicture', getGif);
   // if you get the 'disconnect' message, say the user disconnected
   socket.on('disconnect', function() {
     console.log('user disconnected');
