@@ -29,6 +29,10 @@ var Readline = SerialPort.parsers.Readline; // read serial data as lines
 //-- Addition:
 var NodeWebcam = require( "node-webcam" );// load the webcam module
 
+var request = require('superagent');
+var path = require('path');
+var fs = require('fs');
+
 //---------------------- WEBAPP SERVER SETUP ---------------------------------//
 // use express to create the simple webapp
 app.use(express.static('public')); // find pages in public directory
@@ -87,14 +91,75 @@ let takePicture = () => {
   /// First, we create a name for the new picture.
     /// The .replace() function removes all special characters from the date.
     /// This way we can use it as the filename.
-    var imageName = new Date().toString().replace(/[&\/\\#,+()$~%.'":*?<>{}\s-]/g, '');
+    let imageName = new Date().toString().replace(/[&\/\\#,+()$~%.'":*?<>{}\s-]/g, '');
+
+    let url = 'https://dreamscopeapp.com/api/images';
 
     console.log('making a making a picture at'+ imageName); // Second, the name is logged to the console.
 
     //Third, the picture is  taken and saved to the `public/`` folder
     NodeWebcam.capture('public/'+imageName, opts, function( err, data ) {
-      io.emit('newPicture',(imageName+'.jpg')); ///Lastly, the new name is send to the client web browser.
+      // io.emit('newPicture',(imageName+'.jpg')); ///Lastly, the new name is send to the client web browser.
       /// The browser will take this new name and load the picture from the public folder.
+
+      // make request
+      request
+          .post(url)                    // this is a POST request
+          .field('filter', filter)      // the "filter" parameter
+          .attach('image', imageName)    // attach the file as "image"
+          .end(function(err, res) {     // callback for the response
+
+          if (err) return console.log(err); // log error and quit
+
+          debug(res.headers);
+          debug(res.body);
+
+          // compute the polling URL
+          var poll_url = url + '/' + res.body.uuid;
+
+          // This function calls itself repeatedly to check the processing_status
+          // of the image until the filtered image is available.
+          // When the image has finished processing, it will download the result.
+          var filter = 'art_deco';
+          var outputFilename = path.join(path.dirname(imageName),
+            path.parse(imageName).name + '-filtered-' + filter + path.extname(imageName)
+          );
+          var poll = function() {
+              request.get(poll_url, function(err, res) {
+                  if (!err && res.statusCode == 200) {
+                      debug(res.headers);
+                      debug(res.body);
+
+                      var body = res.body;
+
+                      // check if processing has finished
+                      if (body.processing_status == 1 && body.filtered_url) {
+                          console.log("Done.");
+                          console.log("Downloading image...");
+
+                          // download filtered image and save it to a file
+                          request
+                              .get(body.filtered_url)
+                              .pipe(fs.createWriteStream(outputFilename))
+                              .on('finish', function() {
+                                  console.log("Wrote " + outputFilename);
+                                  io.emit('newPicture',(imageName+'.jpg')); ///Lastly, the new name is send to the client web browser.
+                              });
+                      } else {
+                          // still processing – we'll try again in a second
+                          process.stdout.write(".");
+                          setTimeout(poll, 1000);
+                      }
+                  } else { // log error
+                    console.log(err);
+                  }
+              });
+          };
+
+          // Start polling
+          process.stdout.write("Processing...");
+          poll();
+      });
     });
 }
 
