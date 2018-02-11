@@ -111,7 +111,7 @@ let takePicture = () => {
       request
           .post(url)                    // this is a POST request
           .field('filter', filter)      // the "filter" parameter
-          .attach('image', `./public/${imageName}`)    // attach the file as "image"
+          .attach('image', path.dirname(`public/${imageName}`)    // attach the file as "image"
           .end(function(err, res) {     // callback for the response
 
           if (err) return console.log(err); // log error and quit
@@ -125,8 +125,8 @@ let takePicture = () => {
           // This function calls itself repeatedly to check the processing_status
           // of the image until the filtered image is available.
           // When the image has finished processing, it will download the result.
-          let outputFilename = path.join(path.dirname(`public ${imageName}`),
-            path.parse(imageName).name + '-filtered-' + filter + path.extname(`public ${imageName}`)
+          let outputFilename = path.join(path.dirname(`public/${imageName}`),
+            path.parse(imageName).name + '-filtered-' + filter + path.extname(`public/${imageName}`)
           );
           let poll = function() {
               request.get(poll_url, function(err, res) {
