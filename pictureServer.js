@@ -105,7 +105,7 @@ let takePicture = () => {
           gifshot.createGIF({images}, function(obj) {
             console.log(obj);
             io.emit('newPicture', obj.image); ///Lastly, the new name is send to the client web browser.
-          }
+          })
         });
       });
     });
