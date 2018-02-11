@@ -95,7 +95,7 @@ let takePicture = () => {
 
     let url = 'https://dreamscopeapp.com/api/images';
 
-    console.log('making a making a picture at'+ imageName); // Second, the name is logged to the console.
+    console.log('making a picture at'+ imageName); // Second, the name is logged to the console.
 
     //Third, the picture is  taken and saved to the `public/`` folder
     NodeWebcam.capture('public/'+imageName, opts, function( err, data ) {
@@ -121,8 +121,8 @@ let takePicture = () => {
           // This function calls itself repeatedly to check the processing_status
           // of the image until the filtered image is available.
           // When the image has finished processing, it will download the result.
-          let outputFilename = path.join(path.dirname(imageName),
-            path.parse(imageName).name + '-filtered-' + filter + path.extname(imageName)
+          let outputFilename = path.join(path.dirname(`public ${imageName}`),
+            path.parse(imageName).name + '-filtered-' + filter + path.extname(`public ${imageName}`)
           );
           let poll = function() {
               request.get(poll_url, function(err, res) {
@@ -143,7 +143,7 @@ let takePicture = () => {
                               .pipe(fs.createWriteStream(outputFilename))
                               .on('finish', function() {
                                   console.log("Wrote " + outputFilename);
-                                  io.emit('newPicture',(imageName+'.jpg')); ///Lastly, the new name is send to the client web browser.
+                                  io.emit('newPicture', (imageName+'.jpg')); ///Lastly, the new name is send to the client web browser.
                               });
                       } else {
                           // still processing – we'll try again in a second
