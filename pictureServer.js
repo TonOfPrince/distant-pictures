@@ -99,71 +99,40 @@ let takePicture = () => {
 
     //Third, the picture is  taken and saved to the `public/`` folder
     NodeWebcam.capture('public/'+imageName, opts, function( err, data ) {
-      // io.emit('newPicture',(imageName+'.jpg')); ///Lastly, the new name is send to the client web browser.
-      /// The browser will take this new name and load the picture from the public folder.
+      var GIFEncoder = require('gifencoder');
+      var Canvas = require('canvas');
+      var fs = require('fs');
 
-      // make request
-      let debug = function() {
-        if (process.env.DEBUG) console.log.apply(null, arguments);
-      };
+      var encoder = new GIFEncoder(320, 240);
+      // stream the results as they are available into myanimated.gif
+      encoder.createReadStream().pipe(fs.createWriteStream('myanimated.gif'));
 
-      let filter = 'art_deco';
-      request
-          .post(url)                    // this is a POST request
-          .field('filter', filter)      // the "filter" parameter
-          .attach('image', `public/${imageName}.jpg`)  // attach the file as "image"
-          .end(function(err, res) {     // callback for the response
+      encoder.start();
+      encoder.setRepeat(0);   // 0 for repeat, -1 for no-repeat
+      encoder.setDelay(500);  // frame delay in ms
+      encoder.setQuality(10); // image quality. 10 is default.
 
-          if (err) return console.log(err); // log error and quit
+      // use node-canvas
+      var canvas = new Canvas(320, 240);
+      var ctx = canvas.getContext('2d');
 
-          debug(res.headers);
-          debug(res.body);
+      // red rectangle
+      ctx.fillStyle = '#ff0000';
+      ctx.fillRect(0, 0, 320, 240);
+      encoder.addFrame(ctx);
 
-          // compute the polling URL
-          let poll_url = url + '/' + res.body.uuid;
+      // green rectangle
+      ctx.fillStyle = '#00ff00';
+      ctx.fillRect(0, 0, 320, 240);
+      encoder.addFrame(ctx);
 
-          // This function calls itself repeatedly to check the processing_status
-          // of the image until the filtered image is available.
-          // When the image has finished processing, it will download the result.
-          let outputFilename = path.join(path.dirname(`public/${imageName}`),
-            path.parse(imageName).name + '-filtered-' + filter + path.extname(`public/${imageName}`)
-          );
-          let poll = function() {
-              request.get(poll_url, function(err, res) {
-                  if (!err && res.statusCode == 200) {
-                      debug(res.headers);
-                      debug(res.body);
+      // blue rectangle
+      ctx.fillStyle = '#0000ff';
+      ctx.fillRect(0, 0, 320, 240);
+      encoder.addFrame(ctx);
 
-                      let body = res.body;
-
-                      // check if processing has finished
-                      if (body.processing_status == 1 && body.filtered_url) {
-                          console.log("Done.");
-                          console.log("Downloading image...");
-
-                          // download filtered image and save it to a file
-                          request
-                              .get(body.filtered_url)
-                              .pipe(fs.createWriteStream(outputFilename))
-                              .on('finish', function() {
-                                  console.log("Wrote " + outputFilename);
-                                  io.emit('newPicture', (outputFilename+'.jpg')); ///Lastly, the new name is send to the client web browser.
-                              });
-                      } else {
-                          // still processing – we'll try again in a second
-                          process.stdout.write(".");
-                          setTimeout(poll, 1000);
-                      }
-                  } else { // log error
-                    console.log(err);
-                  }
-              });
-          };
-
-          // Start polling
-          process.stdout.write("Processing...");
-          poll();
-      });
+      encoder.finish();
+      io.emit('newPicture',('myanimated.gif')); ///Lastly, the new name is send to the client web browser.
     });
 }
 
