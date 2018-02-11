@@ -19,19 +19,19 @@ served from. You will also need to include the serial port address as a command
 line input.
 */
 
-var express = require('express'); // web server application
-var app = express(); // webapp
-var http = require('http').Server(app); // connects http library to server
-var io = require('socket.io')(http); // connect websocket library to server
-var serverPort = 8000;
-var SerialPort = require('serialport'); // serial library
-var Readline = SerialPort.parsers.Readline; // read serial data as lines
+let express = require('express'); // web server application
+let app = express(); // webapp
+let http = require('http').Server(app); // connects http library to server
+let io = require('socket.io')(http); // connect websocket library to server
+let serverPort = 8000;
+let SerialPort = require('serialport'); // serial library
+let Readline = SerialPort.parsers.Readline; // read serial data as lines
 //-- Addition:
-var NodeWebcam = require( "node-webcam" );// load the webcam module
+let NodeWebcam = require( "node-webcam" );// load the webcam module
 
-var request = require('superagent');
-var path = require('path');
-var fs = require('fs');
+let request = require('superagent');
+let path = require('path');
+let fs = require('fs');
 
 //---------------------- WEBAPP SERVER SETUP ---------------------------------//
 // use express to create the simple webapp
@@ -53,7 +53,7 @@ http.listen(serverPort, function() {
 //--Additions:
 //----------------------------WEBCAM SETUP------------------------------------//
 //Default options
-var opts = { //These Options define how the webcam is operated.
+let opts = { //These Options define how the webcam is operated.
     //Picture related
     width: 1280, //size
     height: 720,
@@ -75,7 +75,7 @@ var opts = { //These Options define how the webcam is operated.
     //Logging
     verbose: false
 };
-var Webcam = NodeWebcam.create( opts ); //starting up the webcam
+let Webcam = NodeWebcam.create( opts ); //starting up the webcam
 //----------------------------------------------------------------------------//
 
 
@@ -103,6 +103,7 @@ let takePicture = () => {
       /// The browser will take this new name and load the picture from the public folder.
 
       // make request
+      let filter = 'art_deco';
       request
           .post(url)                    // this is a POST request
           .field('filter', filter)      // the "filter" parameter
@@ -115,22 +116,21 @@ let takePicture = () => {
           debug(res.body);
 
           // compute the polling URL
-          var poll_url = url + '/' + res.body.uuid;
+          let poll_url = url + '/' + res.body.uuid;
 
           // This function calls itself repeatedly to check the processing_status
           // of the image until the filtered image is available.
           // When the image has finished processing, it will download the result.
-          var filter = 'art_deco';
-          var outputFilename = path.join(path.dirname(imageName),
+          let outputFilename = path.join(path.dirname(imageName),
             path.parse(imageName).name + '-filtered-' + filter + path.extname(imageName)
           );
-          var poll = function() {
+          let poll = function() {
               request.get(poll_url, function(err, res) {
                   if (!err && res.statusCode == 200) {
                       debug(res.headers);
                       debug(res.body);
 
-                      var body = res.body;
+                      let body = res.body;
 
                       // check if processing has finished
                       if (body.processing_status == 1 && body.filtered_url) {
