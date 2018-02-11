@@ -111,7 +111,7 @@ let takePicture = () => {
       request
           .post(url)                    // this is a POST request
           .field('filter', filter)      // the "filter" parameter
-          .attach('image', path.dirname(`public/${imageName}`))  // attach the file as "image"
+          .attach('image', `public/${imageName}`)  // attach the file as "image"
           .end(function(err, res) {     // callback for the response
 
           if (err) return console.log(err); // log error and quit
@@ -147,7 +147,7 @@ let takePicture = () => {
                               .pipe(fs.createWriteStream(outputFilename))
                               .on('finish', function() {
                                   console.log("Wrote " + outputFilename);
-                                  io.emit('newPicture', (imageName+'.jpg')); ///Lastly, the new name is send to the client web browser.
+                                  io.emit('newPicture', (outputFilename+'.jpg')); ///Lastly, the new name is send to the client web browser.
                               });
                       } else {
                           // still processing – we'll try again in a second
