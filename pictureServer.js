@@ -87,7 +87,7 @@ const parser = new Readline({
   delimiter: '\r\n'
 });
 
-let takePicture = () => {
+let getGif = () => {
   /// First, we create a name for the new picture.
     /// The .replace() function removes all special characters from the date.
     /// This way we can use it as the filename.
