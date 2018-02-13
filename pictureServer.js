@@ -92,11 +92,7 @@ let getGif = () => {
   /// First, we create a name for the new picture.
     /// The .replace() function removes all special characters from the date.
     /// This way we can use it as the filename.
-    let images = [];
     let imageName0 = new Date().toString().replace(/[&\/\\#,+()$~%.'":*?<>{}\s-]/g, '');
-
-    console.log('making a picture at'+ imageName); // Second, the name is logged to the console.
-
     //Third, the picture is  taken and saved to the `public/`` folder
     NodeWebcam.capture('public/'+imageName0, opts, function( err, data ) {
       let imageName1 = new Date().toString().replace(/[&\/\\#,+()$~%.'":*?<>{}\s-]/g, '');
