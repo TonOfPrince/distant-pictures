@@ -96,16 +96,7 @@ let getGif = () => {
 
     //Third, the picture is  taken and saved to the `public/`` folder
     NodeWebcam.capture('public/'+imageName, opts, function( err, data ) {
-      imageName = new Date().toString().replace(/[&\/\\#,+()$~%.'":*?<>{}\s-]/g, '');
-      NodeWebcam.capture('public/'+imageName, opts, function( err, data ) {
-        imageName = new Date().toString().replace(/[&\/\\#,+()$~%.'":*?<>{}\s-]/g, '');
-        NodeWebcam.capture('public/'+imageName, opts, function( err, data ) {
-          gifshot.createGIF({images}, function(obj) {
-            console.log(obj);
-            io.emit('newPicture', obj.image); ///Lastly, the new name is send to the client web browser.
-          })
-        });
-      });
+      io.emit('newPicture', obj.image); ///Lastly, the new name is send to the client web browser.
     });
 }
 
