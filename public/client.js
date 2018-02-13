@@ -38,6 +38,7 @@ socket.on('newPicture', function(msg) {
     var newLi = document.createElement('li');
     var newImg = document.createElement('img');
     newImg.src = array[i];
+    newImg.title = `This is image number ${i + 1}!`;
     newLi.appendChild(newImg);
     document.getElementsByClassName('slideshow')[0].appendChild(newLi);
   }
