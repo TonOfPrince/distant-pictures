@@ -96,7 +96,7 @@ let getGif = () => {
 
     //Third, the picture is  taken and saved to the `public/`` folder
     NodeWebcam.capture('public/'+imageName, opts, function( err, data ) {
-      io.emit('newPicture', obj.image); ///Lastly, the new name is send to the client web browser.
+      io.emit('newPicture', `${imageName}.jpg`); ///Lastly, the new name is send to the client web browser.
     });
 }
 
