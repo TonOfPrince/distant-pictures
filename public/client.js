@@ -39,7 +39,7 @@ socket.on('newPicture', function(msg) {
     var newImg = document.createElement('img');
     newImg.src = array[i];
     newLi.appendChild(newImg);
-    document.getElementsByClassName('slideshow').appendChild(newLi);
+    document.getElementsByClassName('slideshow')[0].appendChild(newLi);
   }
   var slsh = new SlideShow('.slideshow', {timeout: 3000});
 });
