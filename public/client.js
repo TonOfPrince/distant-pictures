@@ -33,6 +33,14 @@ function takePicture(){
 
 socket.on('newPicture', function(msg) {
   // document.getElementById('pictureContainer').src=msg;
+  var array = msg.split(',')
+  for (i = 0; i < array.length; i++) {
+    var newLi = document.createElement('li');
+    var newImg = document.createElement('img');
+    newImg.src = array[i];
+    newLi.appendChild(newImg);
+    document.getElementsByClassName('slideshow').appendChild(newLi);
+  }
   var slsh = new SlideShow('.slideshow', {timeout: 3000});
 });
 // read the data from the message that the server sent and change the
