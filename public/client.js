@@ -10,7 +10,7 @@ Usage: This file is called automatically when the webpage is served.
 
 //--Addition. Added a button handling for the `Take a picture` button.
 */
-var SlideShow = require('simple-slideshow');
+// var SlideShow = require('simple-slideshow');
 // WebSocket connection setup
 var socket = io();
 
