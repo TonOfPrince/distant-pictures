@@ -31,8 +31,8 @@ let NodeWebcam = require( "node-webcam" );// load the webcam module
 
 let gifshot = require('gifshot')
 
-app.use('/simple-slideshow/simple-slideshow.css', express.static('./node_modules/simple-slideshow/src/slideshow.css'));
-app.use('/simple-slideshow/simple-slideshow.js', express.static('./node_modules/simple-slideshow/src/slideshow.js'));
+app.use('/simple-slideshow/slideshow.css', express.static('./node_modules/simple-slideshow/src/slideshow.css'));
+app.use('/simple-slideshow/slideshow.js', express.static('./node_modules/simple-slideshow/src/slideshow.js'));
 
 //---------------------- WEBAPP SERVER SETUP ---------------------------------//
 // use express to create the simple webapp
