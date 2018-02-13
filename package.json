@@ -22,6 +22,7 @@
     "gifshot": "^0.4.5",
     "node-webcam": "^0.4.3",
     "serialport": "^6.0.4",
+    "simple-slideshow": "^2.0.0",
     "socket.io": "^2.0.4",
     "superagent": "^3.8.2"
   }
